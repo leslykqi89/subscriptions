@@ -14,8 +14,8 @@ import (
 
 var collection *mongo.Collection
 
-// Subscriptor required information
-type Subscriptor struct {
+// Subscriber required information
+type Subscriber struct {
 	ID        string `json:"id"`
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
@@ -24,10 +24,10 @@ type Subscriptor struct {
 	Country   string `json:"country"`
 }
 
-// CreateSubscriptor This function creates a new subscriptor in the database.
-func CreateSubscriptor(ctx *gin.Context) {
+// CreateSubscriber This function creates a new subscriptor in the database.
+func CreateSubscriber(ctx *gin.Context) {
 
-	var subscriptor Subscriptor
+	var subscriptor Subscriber
 	ctx.BindJSON(&subscriptor)
 
 	firstname := subscriptor.FirstName
@@ -36,7 +36,7 @@ func CreateSubscriptor(ctx *gin.Context) {
 	topic := subscriptor.Topic
 	country := subscriptor.Country
 
-	subscriptorNew := Subscriptor{
+	subscriptorNew := Subscriber{
 		FirstName: firstname,
 		LastName:  lastname,
 		Email:     email,
@@ -47,7 +47,7 @@ func CreateSubscriptor(ctx *gin.Context) {
 	_, err := collection.InsertOne(context.TODO(), subscriptorNew)
 
 	if err != nil {
-		log.Printf("[ CreateSubscriptor : InsertionError]: Problems inserting the subscriptor. %v ", err)
+		log.Printf("[ CreateSubscriber : InsertionError]: Problems inserting the subscriptor. %v ", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "Error inserting subscriptor in the database.",
@@ -57,17 +57,17 @@ func CreateSubscriptor(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusCreated,
-		"message": "Subscritpor created successfully.",
+		"message": "Subscriber created successfully.",
 	})
 	return
 }
 
-// GetAllSubscriptors obtains all the subscriptors of the database.
-func GetAllSubscriptors(ctx *gin.Context) {
+// GetAllSubscribers obtains all the subscriptors of the database.
+func GetAllSubscribers(ctx *gin.Context) {
 	cursor, err := collection.Find(context.TODO(), bson.M{})
 
 	if err != nil {
-		log.Printf("[ GetAllSubscriptors : CollectingError]: Error connecting to the database to obtain all the subscriptions. %v ", err)
+		log.Printf("[ GetAllSubscribers : CollectingError]: Error connecting to the database to obtain all the subscriptions. %v ", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "Error getting the subscriptors.",
@@ -75,9 +75,9 @@ func GetAllSubscriptors(ctx *gin.Context) {
 		return
 	}
 
-	subscriptors := []Subscriptor{}
+	subscriptors := []Subscriber{}
 	for cursor.Next(context.TODO()) {
-		var subscriptor Subscriptor
+		var subscriptor Subscriber
 		cursor.Decode(&subscriptor)
 		subscriptors = append(subscriptors, subscriptor)
 
@@ -90,14 +90,14 @@ func GetAllSubscriptors(ctx *gin.Context) {
 	return
 }
 
-// GetSubscriptor This function obtains a subscriptor from the ID.
-func GetSubscriptor(ctx *gin.Context) {
+// GetSubscriber This function obtains a subscriptor from the ID.
+func GetSubscriber(ctx *gin.Context) {
 	id := ctx.Param("id")
-	var subscriptor Subscriptor
+	var subscriptor Subscriber
 	err := collection.FindOne(context.TODO(), bson.M{"id": id}).Decode(&subscriptor)
 
 	if err != nil {
-		log.Printf("[ GetSubscriptor : CollectingError]: Error finding the subscriptor %s in the database. %v ", id, err)
+		log.Printf("[ GetSubscriber : CollectingError]: Error finding the subscriptor %s in the database. %v ", id, err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "Error getting the subscriptor.",
@@ -111,10 +111,10 @@ func GetSubscriptor(ctx *gin.Context) {
 	})
 }
 
-// ModifySubscritor Update the subscriptor information.
-func ModifySubscritor(ctx *gin.Context) {
+// ModifySubscriber Update the subscriptor information.
+func ModifySubscriber(ctx *gin.Context) {
 	id := ctx.Param("id")
-	var updatedInfo Subscriptor
+	var updatedInfo Subscriber
 	ctx.BindJSON(&updatedInfo)
 
 	subscriptionInfo := bson.M{
@@ -130,7 +130,7 @@ func ModifySubscritor(ctx *gin.Context) {
 	_, err := collection.UpdateOne(context.TODO(), bson.M{"id": id}, subscriptionInfo)
 
 	if err != nil {
-		log.Printf("[ ModifySubscritor : UpdatingError]: Error updating the subscriptor information. %v ", err)
+		log.Printf("[ ModifySubscriber : UpdatingError]: Error updating the subscriptor information. %v ", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "Error updating the subscriptor information.",
@@ -140,18 +140,18 @@ func ModifySubscritor(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "The subscritor information has been updated.",
+		"message": "The subscriber information has been updated.",
 	})
 
 }
 
-// DeleteSubscritor delete the specified subscritor information.
-func DeleteSubscritor(ctx *gin.Context) {
+// DeleteSubscriber delete the specified subscriber information.
+func DeleteSubscriber(ctx *gin.Context) {
 	id := ctx.Param("id")
 
 	_, err := collection.DeleteOne(context.TODO(), bson.M{"id": id})
 	if err != nil {
-		log.Printf("[ DeleteSubscritor ]: Error deleting the subscriptor information. %v ", err)
+		log.Printf("[ DeleteSubscriber ]: Error deleting the subscriptor information. %v ", err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"status":  http.StatusInternalServerError,
 			"message": "Error deleting the subscriptor information.",
@@ -161,7 +161,7 @@ func DeleteSubscritor(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
-		"message": "The subscritor information has been removed.",
+		"message": "The subscriber information has been removed.",
 	})
 }
 
