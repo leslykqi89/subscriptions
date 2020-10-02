@@ -28,8 +28,8 @@ func handleRequest() {
 	router.POST("/subscriber", database.CreateSubscriber)
 	router.GET("/subscriber/:id", database.GetSubscriber)
 	router.GET("/subscribers", database.GetAllSubscribers)
-	router.PUT("/subscriber/:id", database.ModifySubscritor)
-	router.DELETE("/subscript/:id", database.DeleteSubscritor)
+	router.PUT("/subscriber/:id", database.ModifySubscriber)
+	router.DELETE("/subscriber/:id", database.DeleteSubscriber)
 	router.NoRoute(notFound)
 	router.Run(":8080")
 }

@@ -10,5 +10,5 @@ This project integrates Go with MongoDB, to create a subscritpion RestAPI. The e
     * Returns all the subscribers
 *	PUT /subscriber/:id
     * Update the subscriber with the information provided in the request body.
-*	DELETE /subscript/:id
+*	DELETE /subscriber/:id
     * Removes the subscriber from the database.
